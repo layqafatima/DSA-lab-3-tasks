@@ -1,0 +1,73 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node* child;
+    Node(int val):data(val),next(NULL),child(NULL){}
+};
+
+void insertNext(Node*& head,int val) {
+    if(!head) {
+        head=new Node(val);
+        return;
+    }
+    Node* temp=head;
+    while(temp->next) temp=temp->next;
+    temp->next=new Node(val);
+}
+
+void insertChild(Node* parent,int val) {
+    if(!parent) return;
+    if(!parent->child) parent->child=new Node(val);
+    else {
+        Node* temp=parent->child;
+        while(temp->next) temp=temp->next;
+        temp->next=new Node(val);
+    }
+}
+
+Node* flatten(Node* head) {
+    if(!head) return NULL;
+    Node* curr=head;
+    while(curr) {
+        if(curr->child) {
+            Node* child=flatten(curr->child);
+            Node* next=curr->next;
+            curr->next=child;
+            curr->child=NULL;
+            Node* temp=child;
+            while(temp->next) temp=temp->next;
+            temp->next=next;
+        }
+        curr=curr->next;
+    }
+    return head;
+}
+
+void display(Node* head) {
+    while(head) {
+        cout<<head->data<<" ";
+        head=head->next;
+    }
+    cout<<endl;
+}
+
+int main() {
+    Node* head=NULL;
+    insertNext(head,1);
+    insertNext(head,2);
+    insertNext(head,3);
+
+    insertChild(head->next,4); 
+    insertChild(head->next,5);
+
+    cout<<"Original structure (flattened view not applied): 1->2->3 with 2's child 4->5"<<endl;
+    
+    head=flatten(head);
+    cout<<"Flattened List: ";
+    display(head);
+
+    return 0;
+}
