@@ -1,0 +1,86 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val):data(val),next(NULL){}
+};
+
+void insertEnd(Node*& head,int val) {
+    Node* newNode=new Node(val);
+    if(!head) {
+        head=newNode;
+        return;
+    }
+    Node* temp=head;
+    while(temp->next) {
+        temp=temp->next;
+    }
+    temp->next=newNode;
+}
+
+Node* mergeLists(Node* a,Node* b) {
+    if(!a) return b;
+    if(!b) return a;
+
+    Node* head=NULL;
+    Node* tail=NULL;
+
+    if(a->data<=b->data) {
+        head=a;
+        a=a->next;
+    } else {
+        head=b;
+        b=b->next;
+    }
+    tail=head;
+
+    while(a&&b) {
+        if(a->data<=b->data) {
+            tail->next=a;
+            a=a->next;
+        } else {
+            tail->next=b;
+            b=b->next;
+        }
+        tail=tail->next;
+    }
+
+    if(a) tail->next=a;
+    if(b) tail->next=b;
+
+    return head;
+}
+
+void display(Node* head) {
+    while(head) {
+        cout<<head->data<<" ";
+        head=head->next;
+    }
+    cout<<endl;
+}
+
+int main() {
+    Node* listA=NULL;
+    Node* listB=NULL;
+
+    insertEnd(listA,1);
+    insertEnd(listA,3);
+    insertEnd(listA,5);
+
+    insertEnd(listB,2);
+    insertEnd(listB,4);
+    insertEnd(listB,6);
+
+    cout<<"List A: ";
+    display(listA);
+    cout<<"List B: ";
+    display(listB);
+
+    Node* merged=mergeLists(listA,listB);
+    cout<<"Merged List: ";
+    display(merged);
+
+    return 0;
+}
