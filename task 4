@@ -1,0 +1,53 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val):data(val),next(NULL){}
+};
+
+Node* createCircularList(int n) {
+    Node* head=NULL;
+    Node* prev=NULL;
+    for(int i=1;i<=n;i++) {
+        Node* newNode=new Node(i);
+        if(!head) head=newNode;
+        else prev->next=newNode;
+        prev=newNode;
+    }
+    prev->next=head; 
+    return head;
+}
+
+int josephus(int n,int k) {
+    Node* head=createCircularList(n);
+    Node* prev=NULL;
+    Node* curr=head;
+
+    while(curr->next!=curr) {
+        for(int count=1;count<k;count++) {
+            prev=curr;
+            curr=curr->next;
+        }
+        prev->next=curr->next;
+        Node* temp=curr;
+        curr=curr->next;
+        delete temp;
+    }
+    int survivor=curr->data;
+    delete curr;
+    return survivor;
+}
+
+int main() {
+    int n,k;
+    cout<<"Enter number of people N: ";
+    cin>>n;
+    cout<<"Enter step size k: ";
+    cin>>k;
+
+    int survivor=josephus(n,k);
+    cout<<"The survivor is at position: "<<survivor<<endl;
+    return 0;
+}
